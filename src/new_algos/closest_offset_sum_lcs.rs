@@ -1,5 +1,6 @@
 ///!Intellectual Property of Wannes Vantorre. Distribution not permitted.
 
+///Intellectual Property of Wannes Vantorre. Distribution not permitted.
 pub fn closest_sum_offset_lcs(source: &[u8], target: &[u8]) -> Vec<u8> {
     let mut last_lcs_indexes: (usize, usize) = (0, 0);
     let mut lcs: Vec<u8> = vec![];
@@ -15,6 +16,7 @@ pub fn closest_sum_offset_lcs(source: &[u8], target: &[u8]) -> Vec<u8> {
     lcs
 }
 
+///Intellectual Property of Wannes Vantorre. Distribution not permitted.
 pub fn closest_pair_sum_offsets(source: &[u8], target: &[u8]) -> Option<(usize, usize)> {
     let source_len = source.len();
     let target_len = target.len();
