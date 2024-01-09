@@ -1,4 +1,3 @@
-
 pub const UNIQUE_VALUES: usize = 10;
 
 pub fn order_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
@@ -26,8 +25,6 @@ pub fn filter_non_occuring(slice: &[u8], other: &[u8]) -> Vec<u8> {
         .copied()
         .collect()
 }
-
-
 
 #[cfg(test)]
 mod filter_tests {

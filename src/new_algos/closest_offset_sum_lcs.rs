@@ -3,12 +3,14 @@
 pub fn closest_sum_offset_lcs(source: &[u8], target: &[u8]) -> Vec<u8> {
     let mut last_lcs_indexes: (usize, usize) = (0, 0);
     let mut lcs: Vec<u8> = vec![];
-    while let Some((source_offset, target_offset)) = closest_pair_sum_offsets(
-        &source[last_lcs_indexes.0..],
-        &target[last_lcs_indexes.1..],
-    ) {
-        last_lcs_indexes = (last_lcs_indexes.0+source_offset+1, last_lcs_indexes.1+target_offset+1);
-        lcs.push(source[last_lcs_indexes.0-1]);
+    while let Some((source_offset, target_offset)) =
+        closest_pair_sum_offsets(&source[last_lcs_indexes.0..], &target[last_lcs_indexes.1..])
+    {
+        last_lcs_indexes = (
+            last_lcs_indexes.0 + source_offset + 1,
+            last_lcs_indexes.1 + target_offset + 1,
+        );
+        lcs.push(source[last_lcs_indexes.0 - 1]);
     }
     lcs
 }

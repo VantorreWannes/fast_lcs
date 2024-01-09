@@ -15,7 +15,6 @@ pub fn lcs(source: &[u8], target: &[u8]) -> Vec<usize> {
         .collect::<Vec<usize>>()
 }
 
-
 #[cfg(test)]
 mod index_lcs_tests {
     use crate::slow_lcs::Lcs;
