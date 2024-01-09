@@ -1,17 +1,17 @@
 
 pub const UNIQUE_VALUES: usize = 10;
 
-pub fn order_lut(slice: &[u8]) -> [Vec<usize>; UNIQUE_VALUES] {
-    let mut lut: [Vec<usize>; UNIQUE_VALUES] =
+pub fn order_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
+    let mut lut: [Vec<u8>; UNIQUE_VALUES] =
         count_lut(slice).map(|count| Vec::with_capacity(count as usize));
     for (i, num) in slice.iter().enumerate() {
-        lut[*num as usize].push(i);
+        lut[*num as usize].push(i as u8);
     }
     lut
 }
 
-pub fn count_lut(slice: &[u8]) -> [usize; UNIQUE_VALUES] {
-    let mut lut = [0usize; UNIQUE_VALUES];
+pub fn count_lut(slice: &[u8]) -> [u8; UNIQUE_VALUES] {
+    let mut lut = [0u8; UNIQUE_VALUES];
     for num in slice.iter() {
         lut[*num as usize] += 1;
     }

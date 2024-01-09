@@ -11,8 +11,7 @@ pub fn lcs(source: &[u8], target: &[u8]) -> Vec<usize> {
     source_counts
         .iter()
         .zip(target_counts.iter())
-        .map(|(source_count, target_count)| min(source_count, target_count))
-        .copied()
+        .map(|(source_count, target_count)| *min(source_count, target_count) as usize)
         .collect::<Vec<usize>>()
 }
 
