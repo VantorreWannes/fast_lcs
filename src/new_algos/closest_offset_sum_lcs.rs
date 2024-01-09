@@ -1,4 +1,4 @@
-///!Intellectual Property of Wannes Vantorre shared for personal investigation with @Verq on discord. Distribution not permitted.
+///!Intellectual Property of Wannes Vantorre. Distribution not permitted.
 
 pub fn closest_sum_offset_lcs(source: &[u8], target: &[u8]) -> Vec<u8> {
     let mut last_lcs_indexes: (usize, usize) = (0, 0);

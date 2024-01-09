@@ -1,8 +1,6 @@
-pub const UNIQUE_VALUES: usize = 10;
+use crate::{MaxInputLengthType, UNIQUE_VALUES};
 
-pub type MaxInputLengthType = u8;
-
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Alcs<'a> {
     source: &'a [u8],
     target: &'a [u8],
@@ -83,12 +81,12 @@ impl<'a> Alcs<'a> {
         Some(pair_offsets)
     }
 
-    fn pair_counts_score(counts: &[u8]) -> f32 {
+    fn pair_counts_score(counts: &[MaxInputLengthType]) -> f32 {
         let pair_damage = Alcs::pair_counts_damage(counts);
         (pair_damage / 100.0) * counts.len() as f32
     }
 
-    fn pair_counts_damage(counts: &[u8]) -> f32 {
+    fn pair_counts_damage(counts: &[MaxInputLengthType]) -> f32 {
         let sum = counts.iter().map(|num| *num as usize).sum::<usize>();
         ((counts.len() as f32 / sum as f32) * 100.0).round()
     }
