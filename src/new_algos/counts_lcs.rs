@@ -1,4 +1,4 @@
-use crate::{MaxInputLengthType, UNIQUE_VALUES};
+use crate::{UNIQUE_VALUES, MaxInputLengthType};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Alcs<'a> {
