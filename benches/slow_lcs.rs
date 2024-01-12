@@ -1,6 +1,6 @@
 use divan::{black_box, Bencher};
 use fast_lcs::slow_lcs::Lcs;
-use rand::distributions::{Uniform, Distribution};
+use rand::distributions::{Distribution, Uniform};
 
 #[divan::bench]
 fn bench_slow_lcs(bencher: Bencher) {

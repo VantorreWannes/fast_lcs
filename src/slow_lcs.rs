@@ -1,6 +1,6 @@
 use crate::MaxInputLengthType;
 
-pub const CHUNK_SIZE: usize = 1000;
+pub const CHUNK_SIZE: usize = 2000;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Lcs<'a> {
@@ -16,7 +16,8 @@ impl<'a> Lcs<'a> {
         let target_length = target.len();
         debug_assert!(source_length <= CHUNK_SIZE);
         debug_assert!(target_length <= CHUNK_SIZE);
-        let mut table: Vec<Vec<MaxInputLengthType>> = vec![vec![0; target_length + 1]; source_length + 1];
+        let mut table: Vec<Vec<MaxInputLengthType>> =
+            vec![vec![0; target_length + 1]; source_length + 1];
 
         for x in 0..=source_length {
             for y in 0..=target_length {

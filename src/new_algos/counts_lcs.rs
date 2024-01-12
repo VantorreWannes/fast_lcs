@@ -1,4 +1,4 @@
-use crate::{UNIQUE_VALUES, MaxInputLengthType};
+use crate::{MaxInputLengthType, UNIQUE_VALUES};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Alcs<'a> {
@@ -33,10 +33,12 @@ impl<'a> Alcs<'a> {
             &self.source[last_lcs_indexes.0..],
             &self.target[last_lcs_indexes.1..],
         ) {
-            for source_num in &self.source[last_lcs_indexes.0..=last_lcs_indexes.0+source_offset] {
+            for source_num in &self.source[last_lcs_indexes.0..=last_lcs_indexes.0 + source_offset]
+            {
                 self.source_counts[*source_num as usize] -= 1;
             }
-            for target_num in &self.target[last_lcs_indexes.1..=last_lcs_indexes.1+target_offset] {
+            for target_num in &self.target[last_lcs_indexes.1..=last_lcs_indexes.1 + target_offset]
+            {
                 self.target_counts[*target_num as usize] -= 1;
             }
             last_lcs_indexes = (
@@ -47,7 +49,6 @@ impl<'a> Alcs<'a> {
         }
         lcs
     }
-
 
     fn next_pair_offsets(&self, source: &'a [u8], target: &'a [u8]) -> Option<(usize, usize)> {
         let source_len = source.len();
@@ -106,13 +107,13 @@ mod compare_counts_tests {
 
     #[test]
     fn test_pair_damage() {
-        let source =  [2, 1];
+        let source = [2, 1];
         dbg!(Alcs::pair_counts_damage(&source));
     }
 
     #[test]
     fn test_pair_score() {
-        let source =  [2, 1];
+        let source = [2, 1];
         dbg!(Alcs::pair_counts_score(&source));
     }
 

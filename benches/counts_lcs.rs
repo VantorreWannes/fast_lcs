@@ -1,6 +1,6 @@
 use divan::{black_box, Bencher};
 use fast_lcs::new_algos::counts_lcs::Alcs;
-use rand::distributions::{Uniform, Distribution};
+use rand::distributions::{Distribution, Uniform};
 
 #[divan::bench]
 fn bench_counts_lcs(bencher: Bencher) {

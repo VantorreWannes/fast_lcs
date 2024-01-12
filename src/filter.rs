@@ -1,6 +1,6 @@
-pub const UNIQUE_VALUES: usize = 10;
+pub const UNIQUE_VALUES: usize = 2;
 
-pub fn order_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
+pub fn index_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
     let mut lut: [Vec<u8>; UNIQUE_VALUES] =
         count_lut(slice).map(|count| Vec::with_capacity(count as usize));
     for (i, num) in slice.iter().enumerate() {
@@ -28,7 +28,7 @@ pub fn filter_non_occuring(slice: &[u8], other: &[u8]) -> Vec<u8> {
 
 #[cfg(test)]
 mod filter_tests {
-    use super::{count_lut, filter_non_occuring, order_lut};
+    use super::{count_lut, filter_non_occuring, index_lut};
 
     #[test]
     fn test_count_lut() {
@@ -39,7 +39,7 @@ mod filter_tests {
     #[test]
     fn test_order_lut() {
         let slice = [0, 0, 0, 1, 1, 2, 3];
-        dbg!(order_lut(&slice));
+        dbg!(index_lut(&slice));
     }
 
     #[test]
