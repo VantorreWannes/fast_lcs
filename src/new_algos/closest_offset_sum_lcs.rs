@@ -40,3 +40,52 @@ pub fn closest_pair_sum_offsets(source: &[u8], target: &[u8]) -> Option<(usize, 
     }
     Some(closest_offsets)
 }
+
+#[cfg(test)]
+mod closest_offset_sum_tests {
+    use rand::{distributions::Standard, Rng};
+
+    use crate::{filter::filter_non_occuring, new_algos::counts_lcs::Alcs, slow_lcs::SlowLcs};
+
+    use super::*;
+
+    #[test]
+    fn test_closest_pair_sum_offsets() {
+        let source = [4, 161, 255, 161];
+        let target = [161, 4, 161, 255];
+        println!("{:?}", closest_sum_offset_lcs(&source, &target).len());
+        println!("{:?}", SlowLcs::new(&source, &target).len());
+    }
+
+    #[test]
+    fn test_alcs() {
+        let source = [132, 28];
+        let target = [28, 132, 28];
+        println!("{:?}", Alcs::new(&source, &target).len());
+        println!("{:?}", SlowLcs::new(&source, &target).len());
+    }
+
+    #[test]
+    fn test_find_broken_inputs() {
+        const CHUNK_SIZE: usize = 15;
+        let mut rng = rand::thread_rng().sample_iter(Standard);
+        let mut source: Vec<u8> = (&mut rng).take(CHUNK_SIZE).collect();
+        let mut target: Vec<u8> = (&mut rng).take(CHUNK_SIZE).collect();
+        source = filter_non_occuring(&source, &target);
+        target = filter_non_occuring(&target, &source);
+        let mut cso_lcs = closest_sum_offset_lcs(&source, &target);
+        let mut slow_lcs = SlowLcs::new(&source, &target);
+        while cso_lcs.len() == slow_lcs.len() {
+            source = (&mut rng).take(CHUNK_SIZE).collect();
+            target = (&mut rng).take(CHUNK_SIZE).collect();
+            source = filter_non_occuring(&source, &target);
+            target = filter_non_occuring(&target, &source);
+            cso_lcs = closest_sum_offset_lcs(&source, &target);
+            slow_lcs = SlowLcs::new(&source, &target);
+        }
+        println!("{:?}", &source);
+        println!("{:?}", &target);
+        println!("{:?}", closest_sum_offset_lcs(&source, &target));
+        println!("{:?}", SlowLcs::new(&source, &target).subsequence());
+    }
+}

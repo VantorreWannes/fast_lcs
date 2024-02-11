@@ -43,5 +43,20 @@ TEST 3:
     T = [L, L, L, L, L, L, L, L, L, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
     SC = [2, 4]
     TC = [9, 2]
-    C = [2, 2] // match pairs where the difference between the previous and current min_count tuple summed up is a small as possible. 
+    C = [2, 2] // match pairs where the difference between the previous and current min_count tuple summed up, is a small as possible. 
     L = [0, 1, 1, 1, 1, 0, 0, 0, 0, ]
+
+
+TEST 4:
+    S = [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0]
+    T = [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+    L = [0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0]
+    P = [0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0]
+    SC = [10, 10]
+    TC = [14, 6]
+
+    S = [L, N, N, N, N, L, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0]
+    T = [L, L, L, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+    SC = [6, 8]
+    TC = [13, 4]
+    L = [0, 1]

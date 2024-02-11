@@ -3,13 +3,13 @@ use crate::MaxInputLengthType;
 pub const CHUNK_SIZE: usize = 2000;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Lcs<'a> {
+pub struct SlowLcs<'a> {
     source: &'a [u8],
     target: &'a [u8],
     table: Vec<Vec<MaxInputLengthType>>,
 }
 
-impl<'a> Lcs<'a> {
+impl<'a> SlowLcs<'a> {
     ///Max length for Source and target is `u8::MAX`!
     pub fn new(source: &'a [u8], target: &'a [u8]) -> Self {
         let source_length = source.len();
@@ -102,40 +102,40 @@ mod lcs_tests {
     fn new_panic() {
         let source = vec![0; CHUNK_SIZE as usize + 1];
         let target = vec![];
-        Lcs::new(&source, &target);
+        SlowLcs::new(&source, &target);
     }
 
     #[test]
     fn is_empty() {
         let source = vec![0; CHUNK_SIZE as usize];
         let target = vec![];
-        assert_eq!(Lcs::new(&source, &target).len(), 0);
+        assert_eq!(SlowLcs::new(&source, &target).len(), 0);
     }
 
     #[test]
     fn len() {
         let source = vec![0; CHUNK_SIZE as usize];
         let target = source.clone();
-        assert_eq!(Lcs::new(&source, &target).len(), CHUNK_SIZE as usize);
+        assert_eq!(SlowLcs::new(&source, &target).len(), CHUNK_SIZE as usize);
     }
 
     #[test]
     fn subsequence() {
         let source: Vec<u8> = vec![0; CHUNK_SIZE as usize];
         let target = source.clone();
-        let lcs = Lcs::new(&source, &target);
+        let lcs = SlowLcs::new(&source, &target);
         let subsequence = lcs.subsequence();
         assert_eq!(subsequence, source);
         assert_eq!(subsequence.len(), lcs.len());
 
-        let lcs = Lcs::new(b"XMJYAUZ", b"MZJAWXU");
+        let lcs = SlowLcs::new(b"XMJYAUZ", b"MZJAWXU");
         let subsequence = lcs.subsequence();
         assert_eq!(subsequence, b"MJAU");
         assert_eq!(subsequence.len(), lcs.len());
 
         let source = vec![0; CHUNK_SIZE as usize];
         let target = vec![];
-        let lcs = Lcs::new(&source, &target);
+        let lcs = SlowLcs::new(&source, &target);
         let subsequence = lcs.subsequence();
         assert_eq!(subsequence, vec![]);
         assert_eq!(subsequence.len(), lcs.len());

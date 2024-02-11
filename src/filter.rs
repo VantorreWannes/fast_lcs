@@ -1,4 +1,4 @@
-pub const UNIQUE_VALUES: usize = 2;
+pub const UNIQUE_VALUES: usize = u8::MAX as usize + 1;
 
 pub fn index_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
     let mut lut: [Vec<u8>; UNIQUE_VALUES] =
@@ -9,8 +9,8 @@ pub fn index_lut(slice: &[u8]) -> [Vec<u8>; UNIQUE_VALUES] {
     lut
 }
 
-pub fn count_lut(slice: &[u8]) -> [u8; UNIQUE_VALUES] {
-    let mut lut = [0u8; UNIQUE_VALUES];
+pub fn count_lut(slice: &[u8]) -> [u16; UNIQUE_VALUES] {
+    let mut lut = [0u16; UNIQUE_VALUES];
     for num in slice.iter() {
         lut[*num as usize] += 1;
     }
