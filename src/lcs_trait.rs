@@ -1,6 +1,5 @@
-pub trait Lcs {
-    type Item;
-    fn subsequence(self) -> Vec<Self::Item>;
+pub trait Lcs<T> {
+    fn subsequence(self) -> Vec<T>;
 
     fn len(self) -> usize
     where
