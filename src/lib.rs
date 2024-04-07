@@ -1,6 +1,7 @@
 pub mod filter;
 pub mod new_algos;
 pub mod slow_lcs;
+pub mod lcs_trait;
 
 pub type MaxInputLengthType = u8;
 pub const UNIQUE_VALUES: usize = 256;

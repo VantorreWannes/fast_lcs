@@ -1,8 +1,6 @@
 use std::cmp::min;
 
-use crate::{MaxInputLengthType, UNIQUE_VALUES};
-
-use super::lcs_trait::Lcs;
+use crate::{lcs_trait::Lcs, MaxInputLengthType, UNIQUE_VALUES};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Alcs<'a> {
@@ -111,7 +109,7 @@ impl<'a> Lcs for Alcs<'a> {
 mod min_counts_tests {
     use rand::{distributions::Standard, Rng};
 
-    use crate::{filter::filter_non_occuring, new_algos::lcs_trait::Lcs, slow_lcs::SlowLcs};
+    use crate::{filter::filter_non_occuring, slow_lcs::SlowLcs};
 
     use super::*;
 
