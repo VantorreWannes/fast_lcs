@@ -44,8 +44,6 @@ mod filter_tests {
 
     #[test]
     fn test_filter_non_occuring() {
-        //let slice = [1, 6, 9, 7, 2, 6, 2, 4, 2, 3, 3, 8, 9, 4, 8, 9, 7, 6, 8, 5, 7, 6, 0, 7, 3, 4, 4];
-        //let other = [8, 5, 1, 0, 2, 9, 8, 3, 7, 5, 6, 8, 3, 6, 3, 5, 1, 4, 0, 7, 4, 1, 9, 5, 7, 5, 8];
         let slice = [1, 6, 9, 7, 2, 6, 2, 4, 2, 3, 3, 8, 9, 4, 8];
         let other = [8, 5, 1, 0, 2, 9, 8, 3, 7, 5, 6, 8, 3, 6, 3];
         dbg!(filter_non_occuring(&slice, &other));
