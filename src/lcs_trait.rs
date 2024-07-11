@@ -1,14 +1,14 @@
-pub trait Lcs<T> {
-    fn subsequence(self) -> Vec<T>;
+pub trait Lcs {
+    fn subsequence(&self) -> Vec<u8>;
 
-    fn len(self) -> usize
+    fn len(&self) -> usize
     where
         Self: Sized,
     {
         self.subsequence().len()
     }
 
-    fn is_empty(self) -> bool
+    fn is_empty(&self) -> bool
     where
         Self: Sized,
     {
