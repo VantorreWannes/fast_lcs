@@ -1,6 +1,6 @@
-pub mod utilities;
 pub mod lcs;
 pub mod lcs_trait;
+pub mod utilities;
 
 #[cfg(test)]
 mod uniform_comparison_tests {
