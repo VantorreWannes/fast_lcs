@@ -1,3 +1,5 @@
+pub mod csr_matrix;
+
 use divan::Bencher;
 use fast_lcs::utilities::{counts, filter_shared, indexes};
 use rand::{distributions::Uniform, prelude::Distribution};

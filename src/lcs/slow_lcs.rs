@@ -17,8 +17,8 @@ impl<'a> SlowLcs<'a> {
             target,
         }
     }
-    
-    fn create_table(source: &'a [u8], target: &'a [u8]) -> Vec<Vec<usize>> { 
+
+    fn create_table(source: &'a [u8], target: &'a [u8]) -> Vec<Vec<usize>> {
         let source_length = source.len();
         let target_length = target.len();
         let mut table: Vec<Vec<usize>> = vec![vec![0; target_length + 1]; source_length + 1];
@@ -39,7 +39,6 @@ impl<'a> SlowLcs<'a> {
 }
 
 impl Lcs for SlowLcs<'_> {
-
     fn subsequence(&self) -> Vec<u8> {
         let mut index = self.len();
         let mut subsequence: Vec<u8> = vec![0; index + 1];
@@ -62,13 +61,12 @@ impl Lcs for SlowLcs<'_> {
         subsequence.pop();
         subsequence
     }
-    
+
     fn len(&self) -> usize {
         let source_length = self.source.len();
         let target_length = self.target.len();
         self.table[source_length][target_length]
     }
-    
 }
 
 #[cfg(test)]

@@ -10,9 +10,7 @@ fn new(bencher: Bencher) {
     let target: Vec<u8> = die.sample_iter(&mut rng).take(1000).collect();
     let source = black_box(&source);
     let target = black_box(&target);
-    bencher.bench_local(move || {
-        SlowLcs::new(source, target)
-    });
+    bencher.bench_local(move || SlowLcs::new(source, target));
 }
 
 #[divan::bench]
@@ -22,9 +20,7 @@ fn length(bencher: Bencher) {
     let source: Vec<u8> = die.sample_iter(&mut rng).take(1000).collect();
     let target: Vec<u8> = die.sample_iter(&mut rng).take(1000).collect();
     let lcs = SlowLcs::new(black_box(&source), black_box(&target));
-    bencher.bench_local(move || {
-        lcs.len()
-    });
+    bencher.bench_local(move || lcs.len());
 }
 
 #[divan::bench]
@@ -34,7 +30,5 @@ fn subsequence(bencher: Bencher) {
     let source: Vec<u8> = die.sample_iter(&mut rng).take(1000).collect();
     let target: Vec<u8> = die.sample_iter(&mut rng).take(1000).collect();
     let lcs = SlowLcs::new(black_box(&source), black_box(&target));
-    bencher.bench_local(move || {
-        lcs.subsequence()
-    });
+    bencher.bench_local(move || lcs.subsequence());
 }
