@@ -1,3 +1,7 @@
+pub mod csr_matrix;
+
+use std::ops::Index;
+
 use num_traits::{cast, NumCast, PrimInt, Unsigned, Zero};
 
 pub fn indexes<T>(slice: &[T]) -> Vec<Vec<usize>>
@@ -40,6 +44,46 @@ where
         }
     }
     result
+}
+
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct GenericIter<'a, T, I> {
+    items: &'a T,
+    current: I,
+    length: I,
+}
+
+impl <'a, T, I> GenericIter<'a, T, I>
+where
+    I: From<u8>
+{
+    pub fn new(items: &'a T, length: I) -> GenericIter<'a, T, I> {
+        GenericIter {
+            items,
+            current: I::from(0),
+            length,
+        }
+    }
+}
+
+impl<'a, T, I> Iterator for GenericIter<'a, T, I>
+where
+    T: Index<I>,
+    I: std::cmp::PartialEq + std::ops::AddAssign<I> + From<u8> + Clone + Copy,
+    <T as Index<I>>::Output: 'a,
+{
+    type Item = &'a <T as Index<I>>::Output;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current == self.length {
+            None
+        } else {
+            let result: &<T as Index<I>>::Output = &self.items[self.current];
+            self.current += I::from(1);
+            Some(result)
+        }
+    }
 }
 
 #[cfg(test)]
