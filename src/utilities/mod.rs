@@ -38,14 +38,31 @@ where
 {
     let other_counts = counts(other);
     let mut result = Vec::with_capacity(slice.len());
-    for num in slice.iter() {
-        if other_counts[cast::<T, usize>(*num).unwrap()] != 0 {
-            result.push(*num);
+    for &num in slice.iter() {
+        let num_index = cast::<T, usize>(num).unwrap();
+        let num_count = other_counts.get(num_index).copied().unwrap_or_default();
+        if num_count != 0 {
+            result.push(num);
         }
     }
     result
 }
 
+#[inline]
+pub fn remove_values_from_sorted<T>(arr: &mut Vec<T>, to_remove: &[T]) where T: Ord{ 
+    for value in to_remove.iter() {
+        remove_single_value_from_sorted(arr, value);
+    }
+}
+
+#[inline]
+pub fn remove_single_value_from_sorted<T>(arr: &mut Vec<T>, to_remove: &T) where T: Ord {
+    if let Some(pos) = arr.iter().position(|value| value == to_remove) {
+        let len = arr.len();
+        arr.swap(pos, len - 1);
+        _ = arr.pop();
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct GenericIter<'a, T, I> {
@@ -54,9 +71,9 @@ pub struct GenericIter<'a, T, I> {
     length: I,
 }
 
-impl <'a, T, I> GenericIter<'a, T, I>
+impl<'a, T, I> GenericIter<'a, T, I>
 where
-    I: From<u8>
+    I: From<u8>,
 {
     pub fn new(items: &'a T, length: I) -> GenericIter<'a, T, I> {
         GenericIter {
@@ -86,6 +103,7 @@ where
     }
 }
 
+
 #[cfg(test)]
 mod utilities_tests {
     use super::*;
@@ -110,5 +128,15 @@ mod utilities_tests {
         assert_eq!(lut[2], vec![4]);
         assert_eq!(lut[3], vec![5]);
         assert_eq!(lut[4], vec![6, 7, 8]);
+    }
+
+    #[test]
+    fn delete_values_test() {
+        let mut original = vec![1, 2, 3, 4, 5];
+        let to_delete = vec![1, 3, 5];
+        for &num in to_delete.iter() {
+            remove_single_value_from_sorted(&mut original, &num);
+        }
+        assert_eq!(original, vec![5, 2, 4]);
     }
 }

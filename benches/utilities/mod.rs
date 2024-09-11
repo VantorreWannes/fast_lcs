@@ -1,7 +1,7 @@
 pub mod csr_matrix;
 
 use divan::Bencher;
-use fast_lcs::utilities::{counts, filter_shared, indexes};
+use fast_lcs::utilities::{counts, filter_shared, remove_single_value_from_sorted, indexes};
 use rand::{distributions::Uniform, prelude::Distribution};
 
 #[divan::bench]
@@ -27,4 +27,16 @@ fn filter_shared_usize(bencher: Bencher) {
     let slice: Vec<usize> = die.sample_iter(&mut rng).take(10000).collect();
     let other: Vec<usize> = die.sample_iter(&mut rng).take(10000).collect();
     bencher.bench_local(move || filter_shared(&slice, &other));
+}
+
+#[divan::bench]
+fn remove_single_value_from_sorted_usize(bencher: Bencher) {
+    let mut original = (0..10000usize).collect::<Vec<_>>();
+    let to_delete = original.clone();
+    bencher.bench_local(move || {
+        for &i in to_delete.iter() {
+            remove_single_value_from_sorted(&mut original, &i);
+        }
+        
+    });
 }

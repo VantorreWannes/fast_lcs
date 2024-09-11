@@ -1,8 +1,8 @@
-use std::ops::{Index, IndexMut, Range, RangeInclusive};
+use std::{fmt::Debug, ops::{Index, IndexMut, Range, RangeFrom, RangeInclusive}};
 
 use super::GenericIter;
 
-#[derive(Debug, PartialEq, Eq, Clone, Default)]
+#[derive(PartialEq, Eq, Clone, Default)]
 pub struct CsrMatrix<T> {
     items: Vec<T>,
     offsets: Vec<usize>,
@@ -10,7 +10,10 @@ pub struct CsrMatrix<T> {
 
 impl<T> CsrMatrix<T> {
     pub fn new() -> Self {
-        CsrMatrix::with_capacity(0)
+        Self {
+            items: Vec::new(),
+            offsets: vec![0],
+        }
     }
 
     pub fn with_capacity(capacity: usize) -> Self {
@@ -125,6 +128,24 @@ impl<T> IndexMut<RangeInclusive<usize>> for CsrMatrix<T> {
     }
 }
 
+
+impl<T> Index<RangeFrom<usize>> for CsrMatrix<T> {
+    type Output = [T];
+
+    fn index(&self, index: RangeFrom<usize>) -> &Self::Output {
+        let start = self.offsets[index.start];
+        &self.items[start..]
+    }
+}
+
+
+impl<T> IndexMut<RangeFrom<usize>> for CsrMatrix<T> {
+    fn index_mut(&mut self, index: RangeFrom<usize>) -> &mut Self::Output {
+        let start = self.offsets[index.start];
+        &mut self.items[start..]
+    }
+}
+
 impl<'a, T> From<&'a CsrMatrix<T>> for GenericIter<'a, CsrMatrix<T>, usize> {
 
     fn from(value: &'a CsrMatrix<T>) -> Self {
@@ -132,11 +153,18 @@ impl<'a, T> From<&'a CsrMatrix<T>> for GenericIter<'a, CsrMatrix<T>, usize> {
     }
 }
 
-impl<T> From<&[Vec<T>]> for CsrMatrix<T> where T: std::clone::Clone{
+impl<T> From<&[Vec<T>]> for CsrMatrix<T> where T: std::clone::Clone {
     fn from(value: &[Vec<T>]) -> Self {
         let mut matrix = CsrMatrix::new();
         matrix.extend_from_slice(value);
         matrix
+    }
+}
+
+impl<T> Debug for CsrMatrix<T> where T: Debug {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let combined = self.iter().collect::<Vec<&[T]>>(); 
+        f.debug_struct("CsrMatrix").field("combined", &combined).field("items", &self.items).field("offsets", &self.offsets).finish()
     }
 }
 
