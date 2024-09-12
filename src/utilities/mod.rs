@@ -19,34 +19,59 @@ where
     lut
 }
 
+#[inline]
 pub fn counts<T>(slice: &[T]) -> Vec<usize>
 where
-    T: PrimInt + Unsigned + Zero + Default + NumCast,
+    T: PrimInt + Unsigned + Zero + Default + NumCast + Copy,
 {
-    let max_value = slice.iter().max().copied().unwrap_or_default();
-    let max_value = cast::<T, usize>(max_value).unwrap();
-    let mut lut = vec![0; max_value + 1];
-    for num in slice.iter() {
-        lut[cast::<T, usize>(*num).unwrap()] += 1;
+    if slice.is_empty() {
+        return Vec::new();
     }
-    return lut;
+
+    // Calculate max_value in a single pass and ensure it's a usize
+    let mut max_value = cast::<T, usize>(slice[0]).unwrap_or(0);
+    for &num in slice.iter() {
+        let num_usize = cast::<T, usize>(num).unwrap();
+        if num_usize > max_value {
+            max_value = num_usize;
+        }
+    }
+
+    // Allocate LUT with capacity directly
+    let mut lut = vec![0; max_value + 1];
+
+    // Use iterators for optimal iteration
+    for &num in slice {
+        lut[cast::<T, usize>(num).unwrap()] += 1;
+    }
+
+    lut
 }
 
+#[inline]
 pub fn filter_shared<T>(slice: &[T], other: &[T]) -> Vec<T>
 where
-    T: PrimInt + Unsigned + Zero + Default + NumCast,
+    T: PrimInt + Unsigned + Zero + Default + NumCast + Copy,
 {
+    if other.is_empty() || slice.is_empty() {
+        return Vec::new();
+    }
+
     let other_counts = counts(other);
     let mut result = Vec::with_capacity(slice.len());
+    let max_index = other_counts.len();
+
     for &num in slice.iter() {
         let num_index = cast::<T, usize>(num).unwrap();
-        let num_count = other_counts.get(num_index).copied().unwrap_or_default();
-        if num_count != 0 {
+        if num_index < max_index && other_counts[num_index] > 0 {
             result.push(num);
         }
     }
+
     result
 }
+
+
 
 #[inline]
 pub fn remove_values_from_sorted<T>(arr: &mut Vec<T>, to_remove: &[T]) where T: Ord{ 
@@ -128,6 +153,7 @@ mod utilities_tests {
         assert_eq!(lut[2], vec![4]);
         assert_eq!(lut[3], vec![5]);
         assert_eq!(lut[4], vec![6, 7, 8]);
+        println!("{:?}", lut);
     }
 
     #[test]
