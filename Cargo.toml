@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 num-traits = "0.2.19"
+rayon = "1.10.0"
 
 [dev-dependencies]
 divan = "0.1.8"

@@ -1,5 +1,7 @@
+use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
+
 use crate::utilities::{
-    counts, csr_matrix::CsrMatrix, indexes,
+    counts, csr_matrix::CsrMatrix, filter_shared, indexes
 };
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -13,7 +15,7 @@ pub struct PairScoreLcs<'a> {
 impl<'a> PairScoreLcs<'a> {
     pub fn new(source: &'a [u8], target: &'a [u8]) -> Self {
         let mut pair_indexes = Self::pair_indexes(source, target);
-        pair_indexes.sort_unstable();
+        // pair_indexes.sort_unstable();
         let unblocking_lut = Self::unblocking_lut(&pair_indexes);
         Self {
             source,
@@ -65,61 +67,34 @@ impl<'a> PairScoreLcs<'a> {
              .iter()
              .map(|(source_indexes, _)| *source_indexes)
             .collect::<Vec<usize>>();
-        // let target_pair_indexes = pair_indexes
-        //     .iter()
-        //     .map(|(_, target_indexes)| *target_indexes)
-        //     .collect::<Vec<usize>>();
-        // let source_pair_indexes_lut = Self::pair_index_lut(&source_pair_indexes);
-        // let target_pair_indexes_lut = Self::pair_index_lut(&target_pair_indexes);
-
-        let pair_indexes_counts = counts(&source_pair_indexes);
-        let mut adjusted_pair_indexes: Vec<Vec<usize>> = pair_indexes_counts
+        let target_pair_indexes = pair_indexes
             .iter()
-            .map(|&count| Vec::with_capacity(count))
-            .collect();
+            .map(|(_, target_indexes)| *target_indexes)
+            .collect::<Vec<usize>>();
+        let source_pair_indexes_lut = Self::pair_index_lut(&source_pair_indexes);
+        let target_pair_indexes_lut = Self::pair_index_lut(&target_pair_indexes);
 
-        for &(source_index, target_index) in pair_indexes {
-            adjusted_pair_indexes[source_index].push(target_index);
-        }
-    
-        let adjusted_matrix = CsrMatrix::from(adjusted_pair_indexes.as_slice());
-
-        let mut unblocking_temp = vec![1; pair_indexes.len()];
-        let mut unblocking_lut: CsrMatrix<usize> = CsrMatrix::with_capacity(pair_indexes.len());
-
-        for (source_index, target_indexes) in adjusted_matrix.iter().enumerate() {
-            unblocking_temp[source_index] = 0;
-            let mut unblocking_temp = unblocking_temp.clone();
-            for &target_index in target_indexes {
-                unblocking_temp[target_index] = 0;
-            }
-            let unblocking_temp_indexes_length = unblocking_temp.iter().sum::<usize>();
-            let mut unblocking_temp_indexes = Vec::with_capacity(unblocking_temp_indexes_length);
-            for (index, &unblocking_temp) in unblocking_temp.iter().enumerate() {
-                if unblocking_temp == 1 {
-                    unblocking_temp_indexes.push(index);
-                }
-            }
-            unblocking_lut.push(&unblocking_temp_indexes);
-        }
-        unblocking_lut
+        let unblocking_lut = pair_indexes.par_iter().map(|&(source_index, target_index)| {
+            let source_pair_indexes_slice = &source_pair_indexes_lut[source_index+1..];
+            let target_pair_indexes_slice = &target_pair_indexes_lut[target_index+1..];
+            filter_shared(source_pair_indexes_slice, target_pair_indexes_slice)
+        }).collect::<Vec<Vec<_>>>();
+        CsrMatrix::from(unblocking_lut.as_slice())
 
         // [2, 0, 1, 0]
         // [0, 1, 0, 2]
         // [(0, 1), (0, 3), (2, 1), (2, 3), (1, 2), (3, 0)]
         // [[0, 1], [4, ?], [2, 3], [5, ?]]
         // [[5, ?], [0, 2], [4, ?], [1, 3]]
+        // [[4, 3], [], [], [], [3], []]
 
         // // [[4, 2, 3, 5, ?], [2, 3, 5], [5, ?], []]
         // // [[0, 2, 4, 1, 3], [4, 1, 3], [1, 3], []]
-        // // [[]]
         // // [[4, 3], [], [], [], [3], []]
-
-        // // [[], [0, 1], [0, 1, 4], [0, 1, 4, 2, 3]]
-        // // [[], [5, ?], [5, 0, 2], [5, 0, 2, 4, ?]]
-        // // []
-
         
+
+        // // [[0, 1], [0, 1, 4], [0, 1, 4, 2, 3], [0, 1, 4, 2, 3, 5]]
+        // // [[5, ?], [5, 0, 2], [5, 0, 2, 4, ?], [5, 0, 2, 4, 1, 3]]
 
     }
 }
@@ -169,9 +144,14 @@ mod tests {
 
     #[test]
     fn unblocking_lut() {
-        let pair_indexes = [(0, 1), (1, 2), (2, 0)];
+        let pair_indexes = [(0, 0), (1, 1)];
         let unblocking_lut = PairScoreLcs::unblocking_lut(&pair_indexes);
-        let other_unblocking_lut = CsrMatrix::from(vec![vec![0, 1], vec![2], vec![3]].as_slice());
+        let other_unblocking_lut = CsrMatrix::from(vec![vec![1], vec![]].as_slice());
         assert_eq!(unblocking_lut, other_unblocking_lut);
+    }
+
+    #[test]
+    fn lis_lcs() {
+        
     }
 }
